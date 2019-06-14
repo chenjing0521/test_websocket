@@ -11,11 +11,11 @@ import multiprocessing
 from threadpool import ThreadPool, makeRequests
 
 #修改成自己的websocket地址
-WS_URL = "wss://ws.test.com/"
+WS_URL = "ws://127.0.0.1:18315"
 #定义进程数
-processes=5
+processes=3
 #定义线程数（每个文件可能限制1024个，可以修改fs.file等参数）
-thread_num=1000
+thread_num=1
 
 def on_message(ws, message):
      print(message)
@@ -23,11 +23,11 @@ def on_message(ws, message):
 
 def on_error(ws, error):
     print(error)
-	 pass
+    pass
 
 def on_close(ws):
     print("### closed ###")
-	 pass
+    pass
 
 def on_open(ws):
     def send_trhead():
@@ -46,10 +46,10 @@ def on_open(ws):
 def on_start(num):
     time.sleep(num%20)
     websocket.enableTrace(True)
-    ws = websocket.WebSocketApp(WS_URL + str(num),
-                                on_message=on_message,
-                                on_error=on_error,
-                                on_close=on_close)
+    ws = websocket.WebSocketApp(WS_URL)
+    ws.on_message=on_message
+    ws.on_error=on_error
+    ws.on_close=on_close
     ws.on_open = on_open
     ws.run_forever()
 
@@ -76,4 +76,3 @@ if __name__ == "__main__":
         pool.apply_async(thread_web_socket)
     pool.close()
     pool.join()
-
